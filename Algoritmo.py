@@ -112,19 +112,20 @@ num_geracoes = 500
 coordenadas = carregar_coordenadas('cidades.mat')
 
 
-def cvfun(pop, x, y):
+import numpy as np
+
+def cvfun(pop):
     """
     Função de custo para o problema do caixeiro viajante.
-    Utiliza variáveis 'x' e 'y'.
-
+    Utiliza variáveis globais 'x' e 'y'.
+    
     Parâmetros:
     - pop: matriz de população (Npop x Ncidade)
-    - x: coordenadas x das cidades
-    - y: coordenadas y das cidades
-
+    
     Retorna:
     - dist: vetor de custos (distâncias) para cada cromossomo
     """
+    global x, y
     Npop, Ncidade = pop.shape
     tour = np.hstack((pop, pop[:, [0]]))  # Gera a matriz Npop x (Ncidade+1) onde a última coluna é a cópia da primeira coluna
 
@@ -135,14 +136,12 @@ def cvfun(pop, x, y):
             dcidade[i, j] = np.sqrt((x[i] - x[j])**2 + (y[i] - y[j])**2)
 
     # Calcula o custo (distância total) para cada cromossomo
-    dist = np.zeros(Npop)
+    dist = np.zeros((Npop, 1))
     for i in range(Npop):
         for j in range(Ncidade):
-            dist[i] += dcidade[tour[i, j], tour[i, j+1]]
+            dist[i, 0] += dcidade[tour[i, j], tour[i, j+1]]
 
     return dist
-
-
 
 
 
